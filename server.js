@@ -1,4 +1,4 @@
-require('dotenv').config(); // Load .env variables
+require('dotenv').config(); // Load environment variables
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -11,20 +11,31 @@ const PORT = process.env.PORT || 5009;
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+    origin: '*', // Change to your frontend URL if needed
+    methods: 'GET,POST',
+    allowedHeaders: 'Content-Type'
+}));
 
 // Email configuration
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'makssakundak2008@@gmail.com',
-        pass: 'ylil uicd dpml diql', // Use the app password, NOT your Gmail password
+        user: process.env.EMAIL_USER, // Using .env variables correctly
+        pass: process.env.EMAIL_PASS, // Secure app password
     },
 });
 
 // Booking form submission endpoint
 app.post('/submit-booking', (req, res) => {
     const { name, email, service, date } = req.body;
+
+    // Validate request data
+    if (!name || !email || !service || !date) {
+        return res.status(400).json({ error: "All fields are required." });
+    }
+
+    console.log("Received booking request:", req.body); // Debugging log
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -36,15 +47,15 @@ app.post('/submit-booking', (req, res) => {
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.error('Error sending email:', error);
-            res.status(500).send('Error submitting booking.');
+            return res.status(500).json({ error: "Error submitting booking. Please try again later." });
         } else {
-            console.log('Email sent:', info.response);
-            res.status(200).send('Booking submitted successfully!');
+            console.log('Email sent successfully:', info.response);
+            return res.status(200).json({ message: "Booking submitted successfully!" });
         }
     });
 });
 
-
+// Start server
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`✅ Server is running on port ${PORT}`);
 });
