@@ -13,8 +13,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
     origin: '*', // Change to your frontend URL if needed
-    methods: 'GET,POST',
-    allowedHeaders: 'Content-Type'
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
 }));
 
 // Email configuration
