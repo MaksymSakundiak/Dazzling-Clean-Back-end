@@ -35,7 +35,16 @@ app.post('/submit-booking', (req, res) => {
         return res.status(400).json({ error: "All fields are required." });
     }
 
-    console.log("Received booking request:", req.body); // Debugging log
+    // Backend validation: Ensure the date is today or later
+    const selectedDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize time to avoid timezone issues
+
+    if (selectedDate < today) {
+        return res.status(400).json({ error: "You cannot select a past date." });
+    }
+
+    console.log("Valid booking request received:", req.body);
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -54,6 +63,7 @@ app.post('/submit-booking', (req, res) => {
         }
     });
 });
+
 
 // Start server
 app.listen(PORT, () => {
