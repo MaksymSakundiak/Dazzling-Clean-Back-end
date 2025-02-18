@@ -27,7 +27,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Booking form submission endpoint
-app.post('/submit-booking', (req, res) => {
+app.post('https://dazzling-clean-back-end.onrender.com/submit-booking', (req, res) => {
     const {
         name, email, phone, address, service, date,
         homeType, cleaningType, squareFeet, bedrooms, bathrooms, halfBathrooms,
