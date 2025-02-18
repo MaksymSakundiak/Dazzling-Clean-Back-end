@@ -28,11 +28,25 @@ const transporter = nodemailer.createTransport({
 
 // Booking form submission endpoint
 app.post('/submit-booking', (req, res) => {
-    const { name, email, phone, address, service, date, additionalNotes } = req.body;
+    const {
+        name, email, phone, address, service, date,
+        homeType, cleaningType, squareFeet, bedrooms, bathrooms, halfBathrooms,
+        people, pets, floorType, cleaningLevels, frequency, howOften, dust,
+        additionalServices, hearAbout, comments, city, province, postalCode
+    } = req.body;
 
-    // Validate request data
-    if (!name || !email || !phone || !address || !service || !date) {
-        return res.status(400).json({ error: "All fields are required." });
+    // Validate all required fields
+    const requiredFields = [
+        'name', 'email', 'phone', 'address', 'service', 'date',
+        'homeType', 'cleaningType', 'squareFeet', 'bedrooms', 'bathrooms',
+        'halfBathrooms', 'people', 'pets', 'floorType', 'cleaningLevels',
+        'city', 'province', 'postalCode'
+    ];
+
+    for (const field of requiredFields) {
+        if (!req.body[field]) {
+            return res.status(400).json({ error: `All fields are required. Missing: ${field}` });
+        }
     }
 
     // Backend validation: Ensure the date is today or later
@@ -50,17 +64,36 @@ app.post('/submit-booking', (req, res) => {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
         subject: 'New Booking Request',
-        text: `
-        New Booking Request:
-        -----------------------------
-        Name: ${name}
-        Email: ${email}
-        Phone: ${phone}
-        Address: ${address}
-        Service: ${service}
-        Preferred Date: ${date}
-        Additional Notes: ${additionalNotes || 'None'}
-        -----------------------------
+        html: `
+        <h1>New Booking Request</h1>
+        <table>
+            <tr><th>Field</th><th>Value</th></tr>
+            <tr><td>Name</td><td>${name}</td></tr>
+            <tr><td>Email</td><td>${email}</td></tr>
+            <tr><td>Phone</td><td>${phone}</td></tr>
+            <tr><td>Address</td><td>${address}</td></tr>
+            <tr><td>City</td><td>${city}</td></tr>
+            <tr><td>Province</td><td>${province}</td></tr>
+            <tr><td>Postal Code</td><td>${postalCode}</td></tr>
+            <tr><td>Service</td><td>${service}</td></tr>
+            <tr><td>Preferred Date</td><td>${date}</td></tr>
+            <tr><td>Home Type</td><td>${homeType}</td></tr>
+            <tr><td>Cleaning Type</td><td>${cleaningType}</td></tr>
+            <tr><td>Square Feet</td><td>${squareFeet}</td></tr>
+            <tr><td>Bedrooms</td><td>${bedrooms}</td></tr>
+            <tr><td>Bathrooms</td><td>${bathrooms}</td></tr>
+            <tr><td>Half Bathrooms</td><td>${halfBathrooms}</td></tr>
+            <tr><td>Number of People</td><td>${people}</td></tr>
+            <tr><td>Number of Pets</td><td>${pets}</td></tr>
+            <tr><td>Floor Type</td><td>${floorType}</td></tr>
+            <tr><td>Cleaning Levels</td><td>${cleaningLevels}</td></tr>
+            <tr><td>Frequency</td><td>${frequency}</td></tr>
+            <tr><td>How Often</td><td>${howOften}</td></tr>
+            <tr><td>Dust Level</td><td>${dust}</td></tr>
+            <tr><td>Additional Services</td><td>${additionalServices || 'None'}</td></tr>
+            <tr><td>How Did You Hear About Us</td><td>${hearAbout}</td></tr>
+            <tr><td>Comments & Questions</td><td>${comments || 'None'}</td></tr>
+        </table>
         `,
     };
 
@@ -79,3 +112,4 @@ app.post('/submit-booking', (req, res) => {
 app.listen(PORT, () => {
     console.log(`✅ Server is running on port ${PORT}`);
 });
+
