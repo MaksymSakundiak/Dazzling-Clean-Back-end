@@ -28,10 +28,10 @@ const transporter = nodemailer.createTransport({
 
 // Booking form submission endpoint
 app.post('/submit-booking', (req, res) => {
-    const { name, email, service, date } = req.body;
+    const { name, email, phone, address, service, date, additionalNotes } = req.body;
 
     // Validate request data
-    if (!name || !email || !service || !date) {
+    if (!name || !email || !phone || !address || !service || !date) {
         return res.status(400).json({ error: "All fields are required." });
     }
 
@@ -50,7 +50,18 @@ app.post('/submit-booking', (req, res) => {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
         subject: 'New Booking Request',
-        text: `Name: ${name}\nEmail: ${email}\nService: ${service}\nPreferred Date: ${date}`,
+        text: `
+        New Booking Request:
+        -----------------------------
+        Name: ${name}
+        Email: ${email}
+        Phone: ${phone}
+        Address: ${address}
+        Service: ${service}
+        Preferred Date: ${date}
+        Additional Notes: ${additionalNotes || 'None'}
+        -----------------------------
+        `,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -63,7 +74,6 @@ app.post('/submit-booking', (req, res) => {
         }
     });
 });
-
 
 // Start server
 app.listen(PORT, () => {
