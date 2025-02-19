@@ -25,7 +25,6 @@ const transporter = nodemailer.createTransport({
 });
 
 app.post('/submit-booking', (req, res) => {
-    console.log("Form Data Received:", req.body);
 
     const {
         name, email, service, date,
@@ -54,6 +53,9 @@ app.post('/submit-booking', (req, res) => {
     if (selectedDate < today) {
         return res.status(400).json({ error: "You cannot select a past date." });
     }
+
+
+    console.log("Valid booking request received:", req.body);
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
