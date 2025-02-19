@@ -27,17 +27,17 @@ const transporter = nodemailer.createTransport({
 });
 
 // Booking form submission endpoint
-app.post('https://dazzling-clean-back-end.onrender.com/submit-booking', (req, res) => {
+app.post('/submit-booking', (req, res) => {
     const {
-        name, email, phone, address, service, date,
+        name, email, service, date,
         homeType, cleaningType, squareFeet, bedrooms, bathrooms, halfBathrooms,
         people, pets, floorType, cleaningLevels, frequency, howOften, dust,
         additionalServices, hearAbout, comments, city, province, postalCode
     } = req.body;
 
-    // Validate all required fields
+    // Validate required fields
     const requiredFields = [
-        'name', 'email', 'phone', 'address', 'service', 'date',
+        'name', 'email', 'service', 'date',
         'homeType', 'cleaningType', 'squareFeet', 'bedrooms', 'bathrooms',
         'halfBathrooms', 'people', 'pets', 'floorType', 'cleaningLevels',
         'city', 'province', 'postalCode'
@@ -70,11 +70,6 @@ app.post('https://dazzling-clean-back-end.onrender.com/submit-booking', (req, re
             <tr><th>Field</th><th>Value</th></tr>
             <tr><td>Name</td><td>${name}</td></tr>
             <tr><td>Email</td><td>${email}</td></tr>
-            <tr><td>Phone</td><td>${phone}</td></tr>
-            <tr><td>Address</td><td>${address}</td></tr>
-            <tr><td>City</td><td>${city}</td></tr>
-            <tr><td>Province</td><td>${province}</td></tr>
-            <tr><td>Postal Code</td><td>${postalCode}</td></tr>
             <tr><td>Service</td><td>${service}</td></tr>
             <tr><td>Preferred Date</td><td>${date}</td></tr>
             <tr><td>Home Type</td><td>${homeType}</td></tr>
@@ -93,6 +88,9 @@ app.post('https://dazzling-clean-back-end.onrender.com/submit-booking', (req, re
             <tr><td>Additional Services</td><td>${additionalServices || 'None'}</td></tr>
             <tr><td>How Did You Hear About Us</td><td>${hearAbout}</td></tr>
             <tr><td>Comments & Questions</td><td>${comments || 'None'}</td></tr>
+            <tr><td>City</td><td>${city}</td></tr>
+            <tr><td>Province</td><td>${province}</td></tr>
+            <tr><td>Postal Code</td><td>${postalCode}</td></tr>
         </table>
         `,
     };
@@ -112,4 +110,3 @@ app.post('https://dazzling-clean-back-end.onrender.com/submit-booking', (req, re
 app.listen(PORT, () => {
     console.log(`✅ Server is running on port ${PORT}`);
 });
-
