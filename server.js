@@ -27,14 +27,14 @@ const transporter = nodemailer.createTransport({
 app.post('/submit-booking', (req, res) => {
 
     const {
-        fullName, email, service, date,
+        name, email, service, date,
         homeType, cleaningType, squareFeet, bedrooms, bathrooms, halfBathrooms,
         people, pets, floorType, cleaningLevels, frequency, howOften, dust,
         additionalServices, hearAbout, comments, city, province, postalCode
     } = req.body;
 
     const requiredFields = [
-        'fullName', 'email', 'service', 'date',
+        'name', 'email', 'service', 'date',
         'homeType', 'cleaningType', 'squareFeet', 'bedrooms', 'bathrooms',
         'halfBathrooms', 'people', 'pets', 'floorType', 'cleaningLevels',
         'city', 'province', 'postalCode'
@@ -62,7 +62,7 @@ app.post('/submit-booking', (req, res) => {
         to: process.env.EMAIL_USER,
         subject: 'New Booking Request',
         text: `
-        Full Name: ${fullName}
+        Name: ${name}
         Email: ${email}
         Service: ${service}
         Preferred Date: ${date}
