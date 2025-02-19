@@ -1,4 +1,4 @@
-require('dotenv').config(); // Load environment variables
+require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -8,26 +8,25 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5009;
 
-// Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
-    origin: '*', // Change to your frontend URL if needed
+    origin: '*',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
 }));
 
-// Email configuration
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER, // Using .env variables correctly
-        pass: process.env.EMAIL_PASS, // Secure app password
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
     },
 });
 
-// Booking form submission endpoint
 app.post('/submit-booking', (req, res) => {
+    console.log("Form Data Received:", req.body);
+
     const {
         name, email, service, date,
         homeType, cleaningType, squareFeet, bedrooms, bathrooms, halfBathrooms,
@@ -35,7 +34,6 @@ app.post('/submit-booking', (req, res) => {
         additionalServices, hearAbout, comments, city, province, postalCode
     } = req.body;
 
-    // Validate required fields
     const requiredFields = [
         'name', 'email', 'service', 'date',
         'homeType', 'cleaningType', 'squareFeet', 'bedrooms', 'bathrooms',
@@ -49,16 +47,13 @@ app.post('/submit-booking', (req, res) => {
         }
     }
 
-    // Backend validation: Ensure the date is today or later
     const selectedDate = new Date(date);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Normalize time to avoid timezone issues
+    today.setHours(0, 0, 0, 0);
 
     if (selectedDate < today) {
         return res.status(400).json({ error: "You cannot select a past date." });
     }
-
-    console.log("Valid booking request received:", req.body);
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -102,7 +97,6 @@ app.post('/submit-booking', (req, res) => {
     });
 });
 
-// Start server
 app.listen(PORT, () => {
     console.log(`✅ Server is running on port ${PORT}`);
 });
