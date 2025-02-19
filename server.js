@@ -27,7 +27,7 @@ const transporter = nodemailer.createTransport({
 app.post('/submit-booking', (req, res) => {
 
     const {
-        name, email, service, date,
+        fullName, email, service, date,
         homeType, cleaningType, squareFeet, bedrooms, bathrooms, halfBathrooms,
         people, pets, floorType, cleaningLevels, frequency, howOften, dust,
         additionalServices, hearAbout, comments, city, province, postalCode
@@ -62,7 +62,7 @@ app.post('/submit-booking', (req, res) => {
         to: process.env.EMAIL_USER,
         subject: 'New Booking Request',
         text: `
-        Name: ${name}
+        Full Name: ${fullName}
         Email: ${email}
         Service: ${service}
         Preferred Date: ${date}
