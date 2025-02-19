@@ -34,7 +34,7 @@ app.post('/submit-booking', (req, res) => {
     } = req.body;
 
     const requiredFields = [
-        'name', 'email', 'service', 'date',
+        'fullName', 'email', 'service', 'date',
         'homeType', 'cleaningType', 'squareFeet', 'bedrooms', 'bathrooms',
         'halfBathrooms', 'people', 'pets', 'floorType', 'cleaningLevels',
         'city', 'province', 'postalCode'
