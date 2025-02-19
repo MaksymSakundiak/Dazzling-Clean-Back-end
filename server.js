@@ -64,34 +64,30 @@ app.post('/submit-booking', (req, res) => {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
         subject: 'New Booking Request',
-        html: `
-        <h1>New Booking Request</h1>
-        <table>
-            <tr><th>Field</th><th>Value</th></tr>
-            <tr><td>Name</td><td>${name}</td></tr>
-            <tr><td>Email</td><td>${email}</td></tr>
-            <tr><td>Service</td><td>${service}</td></tr>
-            <tr><td>Preferred Date</td><td>${date}</td></tr>
-            <tr><td>Home Type</td><td>${homeType}</td></tr>
-            <tr><td>Cleaning Type</td><td>${cleaningType}</td></tr>
-            <tr><td>Square Feet</td><td>${squareFeet}</td></tr>
-            <tr><td>Bedrooms</td><td>${bedrooms}</td></tr>
-            <tr><td>Bathrooms</td><td>${bathrooms}</td></tr>
-            <tr><td>Half Bathrooms</td><td>${halfBathrooms}</td></tr>
-            <tr><td>Number of People</td><td>${people}</td></tr>
-            <tr><td>Number of Pets</td><td>${pets}</td></tr>
-            <tr><td>Floor Type</td><td>${floorType}</td></tr>
-            <tr><td>Cleaning Levels</td><td>${cleaningLevels}</td></tr>
-            <tr><td>Frequency</td><td>${frequency}</td></tr>
-            <tr><td>How Often</td><td>${howOften}</td></tr>
-            <tr><td>Dust Level</td><td>${dust}</td></tr>
-            <tr><td>Additional Services</td><td>${additionalServices || 'None'}</td></tr>
-            <tr><td>How Did You Hear About Us</td><td>${hearAbout}</td></tr>
-            <tr><td>Comments & Questions</td><td>${comments || 'None'}</td></tr>
-            <tr><td>City</td><td>${city}</td></tr>
-            <tr><td>Province</td><td>${province}</td></tr>
-            <tr><td>Postal Code</td><td>${postalCode}</td></tr>
-        </table>
+        text: `
+        Name: ${name}
+        Email: ${email}
+        Service: ${service}
+        Preferred Date: ${date}
+        Home Type: ${homeType}
+        Cleaning Type: ${cleaningType}
+        Square Feet: ${squareFeet}
+        Bedrooms: ${bedrooms}
+        Bathrooms: ${bathrooms}
+        Half Bathrooms: ${halfBathrooms}
+        Number of People: ${people}
+        Number of Pets: ${pets}
+        Floor Type: ${floorType}
+        Cleaning Levels: ${cleaningLevels}
+        Frequency: ${frequency}
+        How Often: ${howOften}
+        Dust Level: ${dust}
+        Additional Services: ${additionalServices || 'None'}
+        How Did You Hear About Us: ${hearAbout}
+        Comments & Questions: ${comments || 'None'}
+        City: ${city}
+        Province: ${province}
+        Postal Code: ${postalCode}
         `,
     };
 
