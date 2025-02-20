@@ -32,8 +32,8 @@ app.post('/submit-booking', (req, res) => {
         additionalServices, hearAbout, comments, city, province, postalCode
     } = req.body;
 
-    // Ensure additionalServices is an array
-    const additionalServicesList = Array.isArray(additionalServices) ? additionalServices : [additionalServices].filter(Boolean);
+    // Split additionalServices into an array
+    const additionalServicesList = additionalServices ? additionalServices.split(',') : [];
 
     const requiredFields = [
         'name', 'email', 'service', 'date',
