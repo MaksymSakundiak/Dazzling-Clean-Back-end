@@ -25,13 +25,15 @@ const transporter = nodemailer.createTransport({
 });
 
 app.post('/submit-booking', (req, res) => {
-
     const {
         name, email, service, date,
         homeType, cleaningType, squareFeet, bedrooms, bathrooms, halfBathrooms,
         people, pets, floorType, cleaningLevels, frequency, howOften, dust,
         additionalServices, hearAbout, comments, city, province, postalCode
     } = req.body;
+
+    // Ensure additionalServices is an array
+    const additionalServicesList = Array.isArray(additionalServices) ? additionalServices : [additionalServices].filter(Boolean);
 
     const requiredFields = [
         'name', 'email', 'service', 'date',
@@ -53,7 +55,6 @@ app.post('/submit-booking', (req, res) => {
     if (selectedDate < today) {
         return res.status(400).json({ error: "You cannot select a past date." });
     }
-
 
     console.log("Valid booking request received:", req.body);
 
@@ -79,7 +80,7 @@ app.post('/submit-booking', (req, res) => {
         Frequency: ${frequency}
         How Often: ${howOften}
         Dust Level: ${dust}
-        Additional Services: ${additionalServices || 'None'}
+        Additional Services: ${additionalServicesList.join(', ') || 'None'}
         How Did You Hear About Us: ${hearAbout}
         Comments & Questions: ${comments || 'None'}
         City: ${city}
