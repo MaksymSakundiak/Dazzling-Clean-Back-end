@@ -23,6 +23,37 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASS,
     },
 });
+app.post('/submit-contact', (req, res) => {
+    const { name, email, message } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !message) {
+        return res.status(400).json({ error: "All fields are required." });
+    }
+
+    console.log("Contact form submission received:", req.body);
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: 'New Contact Form Submission',
+        text: `
+        Name: ${name}
+        Email: ${email}
+        Message: ${message}
+        `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Error sending email:', error);
+            return res.status(500).json({ error: "Error submitting contact form. Please try again later." });
+        } else {
+            console.log('Email sent successfully:', info.response);
+            return res.status(200).json({ message: "Message sent successfully!" });
+        }
+    });
+});
 
 app.post('/submit-booking', (req, res) => {
     const {
