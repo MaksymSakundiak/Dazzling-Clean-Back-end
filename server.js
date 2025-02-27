@@ -59,7 +59,7 @@ app.post('/submit-booking', (req, res) => {
     const {
         name, email, service, date,
         homeType, cleaningType, squareFeet, bedrooms, bathrooms, halfBathrooms,
-        people, pets, floorType, cleaningLevels, frequency, howOften, dust,
+        floorType, cleaningLevels, frequency, howOften, dust,
         additionalServices, hearAbout, comments, city, province, postalCode
     } = req.body;
 
@@ -69,7 +69,7 @@ app.post('/submit-booking', (req, res) => {
     const requiredFields = [
         'name', 'email', 'service', 'date',
         'homeType', 'cleaningType', 'squareFeet', 'bedrooms', 'bathrooms',
-        'halfBathrooms', 'people', 'pets', 'floorType', 'cleaningLevels',
+        'halfBathrooms', 'floorType', 'cleaningLevels',
         'city', 'province', 'postalCode'
     ];
 
@@ -104,8 +104,6 @@ app.post('/submit-booking', (req, res) => {
         Bedrooms: ${bedrooms}
         Bathrooms: ${bathrooms}
         Half Bathrooms: ${halfBathrooms}
-        Number of People: ${people}
-        Number of Pets: ${pets}
         Floor Type: ${floorType}
         Cleaning Levels: ${cleaningLevels}
         Frequency: ${frequency}
