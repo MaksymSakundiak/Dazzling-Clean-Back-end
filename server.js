@@ -66,10 +66,11 @@ app.post('/submit-booking', (req, res) => {
     // Split additionalServices into an array
     const additionalServicesList = additionalServices ? additionalServices.split(',') : [];
 
+    // Update required fields (removed bathrooms, halfBathrooms, howOften, hearAbout)
     const requiredFields = [
         'name', 'email', 'service', 'date',
-        'homeType', 'cleaningType', 'squareFeet', 'bedrooms', 'bathrooms',
-        'halfBathrooms', 'floorType', 'cleaningLevels',
+        'homeType', 'cleaningType', 'squareFeet', 'bedrooms',
+        'floorType', 'cleaningLevels',
         'city', 'province', 'postalCode'
     ];
 
@@ -102,15 +103,15 @@ app.post('/submit-booking', (req, res) => {
         Cleaning Type: ${cleaningType}
         Square Feet: ${squareFeet}
         Bedrooms: ${bedrooms}
-        Bathrooms: ${bathrooms}
-        Half Bathrooms: ${halfBathrooms}
+        Bathrooms: ${bathrooms || 'Not specified'}
+        Half Bathrooms: ${halfBathrooms || 'Not specified'}
         Floor Type: ${floorType}
         Cleaning Levels: ${cleaningLevels}
         Frequency: ${frequency}
-        How Often: ${howOften}
+        How Often: ${howOften || 'Not specified'}
         Dust Level: ${dust}
         Additional Services: ${additionalServicesList.join(', ') || 'None'}
-        How Did You Hear About Us: ${hearAbout}
+        How Did You Hear About Us: ${hearAbout || 'Not specified'}
         Comments & Questions: ${comments || 'None'}
         City: ${city}
         Province: ${province}
