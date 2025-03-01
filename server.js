@@ -23,6 +23,37 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASS,
     },
 });
+
+// Function to calculate pricing
+function calculatePricing(cleaningType, squareFeet, bedrooms, bathrooms) {
+    let pricePerSqFt = 0;
+
+    // Set price per square foot based on cleaning type
+    if (cleaningType === 'Post Renovation' || cleaningType === 'Standard cleaning') {
+        pricePerSqFt = 0.17;
+    } else if (cleaningType === 'Deep Cleaning') {
+        pricePerSqFt = 0.20;
+    }
+
+    // Calculate base price based on square footage
+    let totalPrice = squareFeet * pricePerSqFt;
+
+    // Add $20 for each bedroom
+    totalPrice += bedrooms * 20;
+
+    // Add $17.5 for each full bathroom
+    totalPrice += bathrooms * 17.5;
+
+    // Calculate price after tax (13%)
+    const taxRate = 0.13;
+    const priceAfterTax = totalPrice * (1 + taxRate);
+
+    return {
+        totalPrice: totalPrice.toFixed(2),
+        priceAfterTax: priceAfterTax.toFixed(2),
+    };
+}
+
 app.post('/submit-contact', (req, res) => {
     const { name, email, message } = req.body;
 
@@ -88,6 +119,9 @@ app.post('/submit-booking', (req, res) => {
         return res.status(400).json({ error: "You cannot select a past date." });
     }
 
+    // Calculate pricing
+    const { totalPrice, priceAfterTax } = calculatePricing(cleaningType, squareFeet, bedrooms, bathrooms || 0);
+
     console.log("Valid booking request received:", req.body);
 
     const mailOptions = {
@@ -116,6 +150,8 @@ app.post('/submit-booking', (req, res) => {
         City: ${city}
         Province: ${province}
         Postal Code: ${postalCode}
+        Price Before Tax: $${totalPrice}
+        Price After Tax (13%): $${priceAfterTax}
         `,
     };
 
