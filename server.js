@@ -25,28 +25,26 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to calculate pricing
-function calculatePricing(cleaningType, squareFeet, bedrooms, bathrooms) {
-    let pricePerSqFt = 0;
+function calculatePricing(homeType, cleaningType, squareFeet, bedrooms, bathrooms) {
+    let totalPrice = 0;
 
-    // Set price per square foot based on cleaning type
-    if (cleaningType === 'Post Renovation' || cleaningType === 'Standard cleaning') {
-        pricePerSqFt = 0.17;
-    } else if (cleaningType === 'Deep Cleaning') {
-        pricePerSqFt = 0.20;
+    // Pricing logic for House, Apartment, Townhouse
+    if (homeType === 'House' || homeType === 'Apartment' || homeType === 'Townhouse') {
+        totalPrice = bedrooms * 100; // $100 per bedroom
+        totalPrice += bathrooms * 20; // $20 per bathroom
+    }
+    // Pricing logic for Office, Condo
+    else if (homeType === 'Office' || homeType === 'Condo') {
+        totalPrice = squareFeet * 0.40; // $0.40 per square foot
     }
 
-    // Calculate base price based on square footage
-    let totalPrice = squareFeet * pricePerSqFt;
+    // Add 15% for Deep Cleaning
+    if (cleaningType === 'Deep Cleaning') {
+        totalPrice *= 1.15;
+    }
 
-    // Add $20 for each bedroom
-    totalPrice += bedrooms * 20;
-
-    // Add $17.5 for each full bathroom
-    totalPrice += bathrooms * 17.5;
-
-    // Calculate price after tax (13%)
-    const taxRate = 0.13;
-    const priceAfterTax = totalPrice * (1 + taxRate);
+    // Add 13% tax
+    const priceAfterTax = totalPrice * 1.13;
 
     return {
         totalPrice: totalPrice.toFixed(2),
@@ -97,7 +95,7 @@ app.post('/submit-booking', (req, res) => {
     // Split additionalServices into an array
     const additionalServicesList = additionalServices ? additionalServices.split(',') : [];
 
-    // Update required fields (removed bathrooms, halfBathrooms, howOften, hearAbout)
+    // Update required fields
     const requiredFields = [
         'name', 'email', 'service', 'date',
         'homeType', 'cleaningType', 'squareFeet', 'bedrooms',
@@ -120,7 +118,7 @@ app.post('/submit-booking', (req, res) => {
     }
 
     // Calculate pricing
-    const { totalPrice, priceAfterTax } = calculatePricing(cleaningType, squareFeet, bedrooms, bathrooms || 0);
+    const { totalPrice, priceAfterTax } = calculatePricing(homeType, cleaningType, squareFeet, bedrooms, bathrooms || 0);
 
     console.log("Valid booking request received:", req.body);
 
