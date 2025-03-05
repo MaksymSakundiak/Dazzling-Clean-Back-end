@@ -25,17 +25,21 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to calculate pricing
-function calculatePricing(homeType, cleaningType, squareFeet, bedrooms, bathrooms) {
+function calculatePricing(serviceType, homeType, cleaningType, squareFeet, bedrooms, bathrooms) {
     let totalPrice = 0;
 
-    // Pricing logic for House, Apartment, Townhouse
-    if (homeType === 'House' || homeType === 'Apartment' || homeType === 'Townhouse') {
+    // Pricing logic for Residential and Move-In/Move-Out Cleaning
+    if (serviceType === 'Residential Cleaning' || serviceType === 'Move-In/Move-Out Cleaning') {
         totalPrice = bedrooms * 100; // $100 per bedroom
-        totalPrice += bathrooms * 20; // $20 per bathroom
+        totalPrice += (bathrooms || 0) * 20; // $20 per bathroom
     }
-    // Pricing logic for Office, Condo
-    else if (homeType === 'Office' || homeType === 'Condo') {
+    // Pricing logic for Commercial Cleaning
+    else if (serviceType === 'Commercial Cleaning') {
         totalPrice = squareFeet * 0.40; // $0.40 per square foot
+    }
+    // Pricing logic for Post-Construction Cleaning
+    else if (serviceType === 'Post-Construction Cleaning') {
+        totalPrice = squareFeet * 0.50; // $0.50 per square foot (example rate)
     }
 
     // Add 15% for Deep Cleaning
@@ -86,7 +90,7 @@ app.post('/submit-contact', (req, res) => {
 
 app.post('/submit-booking', (req, res) => {
     const {
-        name, email, service, date,
+        name, email, serviceType, date,
         homeType, cleaningType, squareFeet, bedrooms, bathrooms, halfBathrooms,
         floorType, cleaningLevels, frequency, howOften, dust,
         additionalServices, hearAbout, comments, city, province, postalCode
@@ -95,20 +99,25 @@ app.post('/submit-booking', (req, res) => {
     // Split additionalServices into an array
     const additionalServicesList = additionalServices ? additionalServices.split(',') : [];
 
-    // Update required fields
-    const requiredFields = [
-        'name', 'email', 'service', 'date',
-        'homeType', 'cleaningType', 'squareFeet', 'bedrooms',
-        'floorType', 'cleaningLevels',
-        'city', 'province', 'postalCode'
-    ];
+    // Define required fields based on service type
+    let requiredFields = ['name', 'email', 'serviceType', 'date', 'homeType', 'cleaningType', 'floorType', 'cleaningLevels', 'city', 'province', 'postalCode'];
 
+    if (serviceType === 'Residential Cleaning' || serviceType === 'Move-In/Move-Out Cleaning') {
+        requiredFields.push('bedrooms');
+    } else if (serviceType === 'Commercial Cleaning') {
+        requiredFields.push('squareFeet');
+    } else if (serviceType === 'Post-Construction Cleaning') {
+        requiredFields.push('squareFeet');
+    }
+
+    // Validate required fields
     for (const field of requiredFields) {
         if (!req.body[field]) {
             return res.status(400).json({ error: `All fields are required. Missing: ${field}` });
         }
     }
 
+    // Validate date
     const selectedDate = new Date(date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -118,7 +127,7 @@ app.post('/submit-booking', (req, res) => {
     }
 
     // Calculate pricing
-    const { totalPrice, priceAfterTax } = calculatePricing(homeType, cleaningType, squareFeet, bedrooms, bathrooms || 0);
+    const { totalPrice, priceAfterTax } = calculatePricing(serviceType, homeType, cleaningType, squareFeet, bedrooms, bathrooms || 0);
 
     console.log("Valid booking request received:", req.body);
 
@@ -129,19 +138,19 @@ app.post('/submit-booking', (req, res) => {
         text: `
         Name: ${name}
         Email: ${email}
-        Service: ${service}
+        Service: ${serviceType}
         Preferred Date: ${date}
         Home Type: ${homeType}
         Cleaning Type: ${cleaningType}
-        Square Feet: ${squareFeet}
-        Bedrooms: ${bedrooms}
+        Square Feet: ${squareFeet || 'Not specified'}
+        Bedrooms: ${bedrooms || 'Not specified'}
         Bathrooms: ${bathrooms || 'Not specified'}
         Half Bathrooms: ${halfBathrooms || 'Not specified'}
         Floor Type: ${floorType}
         Cleaning Levels: ${cleaningLevels}
-        Frequency: ${frequency}
+        Frequency: ${frequency || 'Not specified'}
         How Often: ${howOften || 'Not specified'}
-        Dust Level: ${dust}
+        Dust Level: ${dust || 'Not specified'}
         Additional Services: ${additionalServicesList.join(', ') || 'None'}
         How Did You Hear About Us: ${hearAbout || 'Not specified'}
         Comments & Questions: ${comments || 'None'}
