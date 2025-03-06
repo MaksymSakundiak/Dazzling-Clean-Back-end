@@ -92,7 +92,7 @@ app.post('/submit-booking', (req, res) => {
     const {
         name, email, serviceType, date,
         homeType, cleaningType, squareFeet, bedrooms, bathrooms, halfBathrooms,
-        floorType, cleaningLevels, frequency, howOften, dust,
+        floorType, frequency, howOften, dust,
         additionalServices, hearAbout, comments, city, province, postalCode
     } = req.body;
 
@@ -100,7 +100,7 @@ app.post('/submit-booking', (req, res) => {
     const additionalServicesList = additionalServices ? additionalServices.split(',') : [];
 
     // Define required fields based on service type
-    let requiredFields = ['name', 'email', 'serviceType', 'date', 'homeType', 'cleaningType', 'floorType', 'cleaningLevels', 'city', 'province', 'postalCode'];
+    let requiredFields = ['name', 'email', 'serviceType', 'date', 'homeType', 'cleaningType', 'floorType', 'city', 'province', 'postalCode'];
 
     if (serviceType === 'Residential Cleaning' || serviceType === 'Move-In/Move-Out Cleaning') {
         requiredFields.push('bedrooms');
@@ -147,7 +147,6 @@ app.post('/submit-booking', (req, res) => {
         Bathrooms: ${bathrooms || 'Not specified'}
         Half Bathrooms: ${halfBathrooms || 'Not specified'}
         Floor Type: ${floorType}
-        Cleaning Levels: ${cleaningLevels}
         Frequency: ${frequency || 'Not specified'}
         How Often: ${howOften || 'Not specified'}
         Dust Level: ${dust || 'Not specified'}
