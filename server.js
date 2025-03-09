@@ -97,7 +97,7 @@ app.post('/submit-contact', (req, res) => {
 app.post('/submit-booking', (req, res) => {
     const {
         name, email, serviceType, date,
-        homeType, cleaningType, squareFeet, bedrooms, bathrooms, halfBathrooms,
+        homeType, cleaningType, squareFeet, bedrooms, bathrooms,
         floorType, frequency, howOften, dust,
         additionalServices, hearAbout, comments, city, province, postalCode
     } = req.body;
@@ -109,7 +109,7 @@ app.post('/submit-booking', (req, res) => {
     let requiredFields = ['name', 'email', 'serviceType', 'date', 'homeType', 'cleaningType', 'floorType', 'city', 'province', 'postalCode'];
 
     if (serviceType === 'Residential Cleaning' || serviceType === 'Move-In/Move-Out Cleaning') {
-        requiredFields.push('bedrooms');
+        requiredFields.push('bedrooms', 'bathrooms');
     } else if (serviceType === 'Commercial Cleaning' || serviceType === 'Post-Construction Cleaning') {
         requiredFields.push('squareFeet');
     }
@@ -149,7 +149,6 @@ app.post('/submit-booking', (req, res) => {
         Square Feet: ${squareFeet || 'Not specified'}
         Bedrooms: ${bedrooms || 'Not specified'}
         Bathrooms: ${bathrooms || 'Not specified'}
-        Half Bathrooms: ${halfBathrooms || 'Not specified'}
         Floor Type: ${floorType}
         Frequency: ${frequency || 'Not specified'}
         How Often: ${howOften || 'Not specified'}
