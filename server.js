@@ -32,7 +32,7 @@ function calculatePricing(serviceType, homeType, cleaningType, squareFeet, bedro
     if (serviceType === 'Residential Cleaning' || serviceType === 'Move-In/Move-Out Cleaning') {
         if (homeType === 'House' || homeType === 'Apartment' || homeType === 'Townhouse') {
             totalPrice = bedrooms * 100; // $100 per bedroom
-            totalPrice += (bathrooms || 0) * 20; // $20 per bathroom
+            totalPrice += (bathrooms || 0) * 10; // $20 per bathroom
         }
     }
     // Pricing logic for Commercial Cleaning
