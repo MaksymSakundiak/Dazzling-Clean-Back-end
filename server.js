@@ -30,12 +30,22 @@ function calculatePricing(serviceType, homeType, cleaningType, squareFeet, bedro
 
     // Pricing logic for Residential and Move-In/Move-Out Cleaning
     if (serviceType === 'Residential Cleaning' || serviceType === 'Move-In/Move-Out Cleaning') {
-        totalPrice = bedrooms * 100; // $100 per bedroom
-        totalPrice += (bathrooms || 0) * 20; // $20 per bathroom
+        if (homeType === 'House' || homeType === 'Apartment' || homeType === 'Townhouse') {
+            totalPrice = bedrooms * 100; // $100 per bedroom
+            totalPrice += (bathrooms || 0) * 20; // $20 per bathroom
+        }
     }
-    // Pricing logic for Commercial Cleaning and Post-Construction Cleaning
-    else if (serviceType === 'Commercial Cleaning' || serviceType === 'Post-Construction Cleaning') {
-        totalPrice = squareFeet * 0.40; // $0.40 per square foot
+    // Pricing logic for Commercial Cleaning
+    else if (serviceType === 'Commercial Cleaning') {
+        if (homeType === 'Office' || homeType === 'Condo') {
+            totalPrice = squareFeet * 0.40; // $0.40 per square foot
+        }
+    }
+    // Pricing logic for Post-Construction Cleaning
+    else if (serviceType === 'Post-Construction Cleaning') {
+        if (homeType === 'House' || homeType === 'Townhouse' || homeType === 'Apartment' || homeType === 'Condo' || homeType === 'Office') {
+            totalPrice = squareFeet * 0.30; // $0.30 per square foot
+        }
     }
 
     // Add 15% for Deep Cleaning
