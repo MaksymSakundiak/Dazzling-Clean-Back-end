@@ -38,7 +38,7 @@ function calculatePricing(serviceType, homeType, cleaningType, squareFeet, bedro
     // Pricing logic for Commercial Cleaning
     else if (serviceType === 'Commercial Cleaning') {
         if (homeType === 'Office' || homeType === 'Condo') {
-            totalPrice = squareFeet * 0.40; // $0.40 per square foot
+            totalPrice = squareFeet * 0.30; // $0.30 per square foot
         }
     }
     // Pricing logic for Post-Construction Cleaning
