@@ -25,7 +25,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to calculate pricing
-function calculatePricing(serviceType, homeType, cleaningType, squareFeet, bedrooms, bathrooms) {
+function calculatePricing(serviceType, homeType, cleaningType, squareFeet, bedrooms, bathrooms, additionalServices) {
     let totalPrice = 0;
 
     // Pricing logic for Residential and Move-In/Move-Out Cleaning
@@ -33,18 +33,24 @@ function calculatePricing(serviceType, homeType, cleaningType, squareFeet, bedro
         totalPrice = bedrooms * 100; // $100 per bedroom
         totalPrice += (bathrooms || 0) * 20; // $20 per bathroom
     }
-    // Pricing logic for Commercial Cleaning
-    else if (serviceType === 'Commercial Cleaning') {
+    // Pricing logic for Commercial Cleaning and Post-Construction Cleaning
+    else if (serviceType === 'Commercial Cleaning' || serviceType === 'Post-Construction Cleaning') {
         totalPrice = squareFeet * 0.40; // $0.40 per square foot
-    }
-    // Pricing logic for Post-Construction Cleaning
-    else if (serviceType === 'Post-Construction Cleaning') {
-        totalPrice = squareFeet * 0.50; // $0.50 per square foot (example rate)
     }
 
     // Add 15% for Deep Cleaning
     if (cleaningType === 'Deep Cleaning') {
         totalPrice *= 1.15;
+    }
+
+    // Add pricing for additional services
+    if (additionalServices) {
+        const services = additionalServices.split(',');
+        services.forEach(service => {
+            if (service === 'Oven inside' || service === 'Refrigerator inside') {
+                totalPrice += 20; // $20 for each additional service
+            }
+        });
     }
 
     // Add 13% tax
@@ -104,9 +110,7 @@ app.post('/submit-booking', (req, res) => {
 
     if (serviceType === 'Residential Cleaning' || serviceType === 'Move-In/Move-Out Cleaning') {
         requiredFields.push('bedrooms');
-    } else if (serviceType === 'Commercial Cleaning') {
-        requiredFields.push('squareFeet');
-    } else if (serviceType === 'Post-Construction Cleaning') {
+    } else if (serviceType === 'Commercial Cleaning' || serviceType === 'Post-Construction Cleaning') {
         requiredFields.push('squareFeet');
     }
 
@@ -127,7 +131,7 @@ app.post('/submit-booking', (req, res) => {
     }
 
     // Calculate pricing
-    const { totalPrice, priceAfterTax } = calculatePricing(serviceType, homeType, cleaningType, squareFeet, bedrooms, bathrooms || 0);
+    const { totalPrice, priceAfterTax } = calculatePricing(serviceType, homeType, cleaningType, squareFeet, bedrooms, bathrooms || 0, additionalServices);
 
     console.log("Valid booking request received:", req.body);
 
